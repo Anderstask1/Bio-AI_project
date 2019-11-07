@@ -18,10 +18,8 @@ cd /home/anderstask1/.mujoco/mujoco200/bin
  conda activate mujoco-gym
 
 
-## LINUX - MacOS, setup (Marius)
+## MacOS - setup (Marius)
 
 1) Run py files with gym imported
 
 activate Gym environment in anaconda (conda activate Gym)
-
-2) 
