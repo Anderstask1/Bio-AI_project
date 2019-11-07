@@ -4,7 +4,7 @@ Course project related to "Bio-Inspired Artificial Intelligence" at University o
 
 
 
-## LINUX - Ubuntu, setup Dell XPS 5
+## LINUX - Ubuntu, setup Dell XPS 15
 
 1) To run the Mujoco simulator: 
 
