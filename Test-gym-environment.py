@@ -1,22 +1,25 @@
+import numpy as np
 import gym
-env = gym.make('Humanoid-v2')
 
-from gym import envs
-print(envs.registry.all())    # print the available environments
 
-print(env.action_space)
-print(env.observation_space)
-print(env.observation_space.high)
-print(env.observation_space.low)
+env = gym.make('HandManipulatePen-v0')
+obs = env.reset()
+done = False
 
-for i_episode in range(200):
- observation = env.reset()
- for t in range(100):
-     env.render()
-     print(observation)
-     action = env.action_space.sample()    # take a random action
-     observation, reward, done, info = env.step(action)
-     if done:
-         print("Episode finished after {} timesteps".format(t+1))
-         break
-env.close()
+def policy(observation, desired_goal):
+    # Here you would implement your smarter policy. In this case,
+    # we just sample random actions.
+    return env.action_space.sample()
+
+while not done:
+    action = policy(obs['observation'], obs['desired_goal'])
+    obs, reward, done, info = env.step(action)
+    env.render()
+
+    # If we want, we can substitute a goal here and re-compute
+    # the reward. For instance, we can just pretend that the desired
+    # goal was what we achieved all along.
+    substitute_goal = obs['achieved_goal'].copy()
+    substitute_reward = env.compute_reward(
+        obs['achieved_goal'], substitute_goal, info)
+    print('reward is {}, substitute_reward is {}'.format(reward, substitute_reward))
