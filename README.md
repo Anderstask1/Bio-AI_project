@@ -16,6 +16,12 @@ cd /home/anderstask1/.mujoco/mujoco200/bin
 2) To use mujoco_py library in terminal, enter Anaconda virtual environment named "mujoco-gym". Aka run
 
  conda activate mujoco-gym
+ 
+ ### Enter Anaconda virtual environment 
+ 
+ named "bio-project". Aka run
+
+ conda activate bio-project
 
 
 ## MacOS - setup (Marius)
