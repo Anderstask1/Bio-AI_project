@@ -3,17 +3,16 @@
 
 import gym
 import numpy as np
-import time
 
 env = gym.make("MountainCar-v0")
 
 LEARNING_RATE = 0.1
 
 DISCOUNT = 0.95
-EPISODES = 25000
+EPISODES = 10000
 SHOW_EVERY = 3000
 
-DISCRETE_OS_SIZE = [20, 20]
+DISCRETE_OS_SIZE = [20] * len(env.observation_space.high)
 discrete_os_win_size = (env.observation_space.high - env.observation_space.low)/DISCRETE_OS_SIZE
 
 # Exploration settings
@@ -57,7 +56,6 @@ for episode in range(EPISODES):
 
         if episode % SHOW_EVERY == 0:
             env.render()
-            time.sleep(0.01)
         #new_q = (1 - LEARNING_RATE) * current_q + LEARNING_RATE * (reward + DISCOUNT * max_future_q)
 
         # If simulation did not end yet after last step - update Q table
@@ -80,7 +78,7 @@ for episode in range(EPISODES):
         elif new_state[0] >= env.goal_position:
             #q_table[discrete_state + (action,)] = reward
             q_table[discrete_state + (action,)] = 0
-            print(f"We made it on episode {episode}")
+            print(f"Finished on {episode}")
 
         discrete_state = new_discrete_state
 
