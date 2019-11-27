@@ -5,6 +5,7 @@ import numpy as np
 import gym
 from gym import wrappers
 import visualize
+import graphviz
 
 def eval_genomes(genomes, config):
     episodes=1
@@ -26,7 +27,7 @@ def eval_genomes(genomes, config):
                 #outputs = neat.nn.FeedForwardNetwork.activate(inputs)
                 outputs = net.activate(state)
                 state, reward, done, _ = my_env.step(outputs)
-                print("you got reward: ",reward)
+                #print("you got reward: ",reward)
                 if render:
                     my_env.render()
                 if done:
@@ -35,7 +36,7 @@ def eval_genomes(genomes, config):
                 fitnesses.append(reward)
 
         fitness = np.array(fitnesses).mean()
-        print("fitness after mean: ", fitness)
+        #print("fitness after mean: ", fitness)
         
         genome.fitness = fitness 
 
@@ -57,13 +58,13 @@ def run(config_file):
     #p.add_reporter(neat.Checkpointer(5))
 
     # Run for up to 300 generations.
-    winner = p.run(eval_genomes, 2)
+    winner = p.run(eval_genomes, 10)
 
     # Display the winning genome.
     print('\nBest genome:\n{!s}'.format(winner))
 
 
-    visualize.draw_net(config, winner)
+    visualize.draw_net(config, winner, view=True)
     visualize.plot_stats(stats, ylog=False, view=True)
     visualize.plot_species(stats, view=True)
 
