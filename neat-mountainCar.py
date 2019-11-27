@@ -26,7 +26,8 @@ def eval_genomes(genomes, config):
             for j in range(steps):
                 #outputs = neat.nn.FeedForwardNetwork.activate(inputs)
                 outputs = net.activate(state)
-                state, reward, done, _ = my_env.step(outputs)
+                action = np.argmax(outputs)
+                state, reward, done, _ = my_env.step(action)
                 #print("you got reward: ",reward)
                 if render:
                     my_env.render()
@@ -58,13 +59,13 @@ def run(config_file):
     #p.add_reporter(neat.Checkpointer(5))
 
     # Run for up to 300 generations.
-    winner = p.run(eval_genomes, 10)
+    winner = p.run(eval_genomes, 50)
 
     # Display the winning genome.
     print('\nBest genome:\n{!s}'.format(winner))
 
 
-    visualize.draw_net(config, winner, view=True)
+    #visualize.draw_net(config, winner, view=True)
     visualize.plot_stats(stats, ylog=False, view=True)
     visualize.plot_species(stats, view=True)
 
@@ -78,10 +79,10 @@ if __name__ == '__main__':
     # Determine path to configuration file. This path manipulation is
     # here so that the script will run successfully regardless of the
     # current working directory.
-    my_env = gym.make('BipedalWalker-v2')
+    my_env = gym.make('MountainCar-v0')
     videos_dir = mkdir('.', 'videos')
-    monitor_dir = mkdir(videos_dir, 'BipedalWalker-v2')
+    monitor_dir = mkdir(videos_dir, 'MountainCar-v0')
 
     local_dir = os.path.dirname(__file__)
-    config_path = os.path.join(local_dir, 'config-feedforward_walker.txt')
+    config_path = os.path.join(local_dir, 'config-feedforward_car.txt')
     run(config_path)
