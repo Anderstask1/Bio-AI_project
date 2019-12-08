@@ -19,7 +19,7 @@ DISCRETE_OS_SIZE = [40] * len(env.observation_space.high)
 discrete_os_win_size = (env.observation_space.high - env.observation_space.low)/DISCRETE_OS_SIZE
 
 # Exploration settings
-epsilon = 1/2  # not a constant, qoing to be decayed
+epsilon = 1  # not a constant, qoing to be decayed
 START_EPSILON_DECAYING = 1
 END_EPSILON_DECAYING = EPISODES//2
 epsilon_decay_value = epsilon/(END_EPSILON_DECAYING - START_EPSILON_DECAYING)
@@ -110,11 +110,11 @@ for episode in range(EPISODES):
         aggr_ep_rewards['avg'].append(average_reward)
         aggr_ep_rewards['max'].append(max(ep_rewards[-STATS_EVERY:]))
         aggr_ep_rewards['min'].append(min(ep_rewards[-STATS_EVERY:]))
-        print(f'Episode: {episode:>5d}, average reward: {average_reward:>4.1f}, max reward: {max(ep_rewards[-STATS_EVERY:])}, current epsilon: {epsilon:>1.2f}')
+        #print(f'Episode: {episode:>5d}, average reward: {average_reward:>4.1f}, max reward: {max(ep_rewards[-STATS_EVERY:])}, current epsilon: {epsilon:>1.2f}')
 
     # Save qtable,both for later use and for analyze
-    if episode % 100 == 0:
-        np.save(f"/home/anderstask1/Documents/Kyb/Bio-AI/Bio-AI_project/qtables/qtable{episode}", q_table)
+    # if episode % 100 == 0:
+    #     np.save(f"/home/anderstask1/Documents/Kyb/Bio-AI/Bio-AI_project/qtables/qtable{episode}", q_table)
 
 env.close()
 
@@ -122,6 +122,8 @@ env.close()
 plt.plot(aggr_ep_rewards['ep'], aggr_ep_rewards['avg'], label="average rewards")
 plt.plot(aggr_ep_rewards['ep'], aggr_ep_rewards['max'], label="max rewards")
 plt.plot(aggr_ep_rewards['ep'], aggr_ep_rewards['min'], label="min rewards")
-plt.legend(loc=4)
+plt.legend(loc=1, fontsize="x-large")
+plt.xlabel('episode')
+plt.ylabel('fitness')
 plt.grid(True)
 plt.show()

@@ -22,7 +22,7 @@ for i in range(0, 25000, 100):
     ax2 = fig.add_subplot(312)
     ax3 = fig.add_subplot(313)
 
-    q_table = np.load(f"/home/anderstask1/Documents/Kyb/Bio-AI/Bio-AI_project/qtables/qtable{i}.npy")
+    q_table = np.load(f"/home/anderstask1/Documents/Kyb/Bio-AI/Bio-AI_project/results/qtables/qtable{i}.npy")
 
     for x, x_vals in enumerate(q_table):
         for y, y_vals in enumerate(x_vals):
@@ -35,5 +35,5 @@ for i in range(0, 25000, 100):
             ax3.set_ylabel("Action 2")
 
     #plt.show()
-    plt.savefig(f"/home/anderstask1/Documents/Kyb/Bio-AI/Bio-AI_project/qtables/qtable_chart{i}.png")
+    plt.savefig(f"/home/anderstask1/Documents/Kyb/Bio-AI/Bio-AI_project/results/qtables/qtable_chart{i}.png")
     plt.clf()
