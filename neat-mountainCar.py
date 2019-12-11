@@ -9,9 +9,8 @@ import graphviz
 import argparse
 import uuid
 
-def eval_genomes(genomes, config):
+def eval_genomes(genomes, config,render=False):
     steps=500
-    render =False
 
     for genome_id, genome in genomes:
         net = neat.nn.FeedForwardNetwork.create(genome, config)
@@ -59,7 +58,10 @@ def run(config_file):
 
 
     # Run for up to 300 generations.
-    winner = p.run(eval_genomes, 2)
+    winner = p.run(eval_genomes, 50)
+
+
+    eval_genomes([(0, winner)], config, render=True)
 
     # Display the winning genome.
     print('\nBest genome:\n{!s}'.format(winner))
@@ -92,9 +94,8 @@ if __name__ == '__main__':
     # here so that the script will run successfully regardless of the
     # current working directory.
     my_env = gym.make('MountainCar-v0')
-    videos_dir = mkdir('.', 'videos')
-    monitor_dir = mkdir(videos_dir, 'MountainCar-v0')
+
 
     local_dir = os.path.dirname(__file__)
-    config_path = os.path.join(local_dir, 'config-feedforward_car.txt')
+    config_path = os.path.join(local_dir, 'config-feedforward_car_copy.txt')
     run(config_path)
