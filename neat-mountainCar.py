@@ -7,6 +7,7 @@ from gym import wrappers
 import visualize
 import graphviz
 import argparse
+import uuid
 
 def eval_genomes(genomes, config):
     steps=500
@@ -29,6 +30,7 @@ def eval_genomes(genomes, config):
                 my_env.render()
             if done:
                 break
+
             cum_reward += reward
 
         genome.fitness = cum_reward
@@ -53,19 +55,25 @@ def run(config_file):
     p.add_reporter(neat.StdOutReporter(True))
     stats = neat.StatisticsReporter()
     p.add_reporter(stats)
-    p.add_reporter(neat.Checkpointer(generation_interval=10, time_interval_seconds=None, filename_prefix='./checkpoints/neat-checkpoint-'))
+    p.add_reporter(neat.Checkpointer(generation_interval=10, time_interval_seconds=None, filename_prefix='./checkpoints_mc/neat-checkpoint-'))
 
 
     # Run for up to 300 generations.
-    winner = p.run(eval_genomes, 20)
+    winner = p.run(eval_genomes, 2)
 
     # Display the winning genome.
     print('\nBest genome:\n{!s}'.format(winner))
 
+    #save and sort plots from simulation in folder
+    unique_plot_filename =str(uuid.uuid4()) #make unique filename to not overwrite old plots
+    fitness_plot_name= './plots_mc/fitness_'+str(winner.fitness)+'id_'+unique_plot_filename+'.svg'
+    species_plot_name= './plots_mc/species_'+str(winner.fitness)+'id_'+unique_plot_filename+'.svg'
+    network_plot_name= './plots_mc/network'+str(winner.fitness)+'id_'+unique_plot_filename+'.svg'
 
-    visualize.draw_net(config, winner, view=True)
-    visualize.plot_stats(stats, ylog=False, view=True)
-    visualize.plot_species(stats, view=True)
+    visualize.draw_net(config, winner, view=True, filename=network_plot_name)
+    visualize.plot_stats(stats, ylog=False, view=True, filename=fitness_plot_name)
+    visualize.plot_species(stats, view=True, filename=species_plot_name)
+
 
 def mkdir(base, name):
     path = os.path.join(base, name)
