@@ -1,0 +1,7 @@
+src/best_genomes/*
+src/checkpoints/*
+*∕vid/
+*∕videos/
+*.idea
+*vid_archives/
+*.log
