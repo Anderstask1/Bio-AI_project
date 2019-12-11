@@ -9,38 +9,29 @@ import graphviz
 import argparse
 
 def eval_genomes(genomes, config):
-    episodes=1
     steps=500
     render =False
 
     for genome_id, genome in genomes:
-        genome.fitness = 0.0
         net = neat.nn.FeedForwardNetwork.create(genome, config)
         
         #simulation 
         state = my_env.reset()
-        prev_state=state
-        fitnesses = []
-        for runs in range(episodes):
-            cum_reward = 0.0
+        cum_reward = 0.0
 
-            for j in range(steps):
-                #outputs = neat.nn.FeedForwardNetwork.activate(inputs)
-                outputs = net.activate(state)
-                action = np.argmax(outputs)
-                state, reward, done, _ = my_env.step(action)
-                #print("you got reward: ",reward)
-                if render:
-                    my_env.render()
-                if done:
-                    break
-                cum_reward += reward
-                fitnesses.append(cum_reward)
+        for j in range(steps):
+            #outputs = neat.nn.FeedForwardNetwork.activate(inputs)
+            outputs = net.activate(state)
+            action = np.argmax(outputs)
+            state, reward, done, _ = my_env.step(action)
+            #print("you got reward: ",reward)
+            if render:
+                my_env.render()
+            if done:
+                break
+            cum_reward += reward
 
-        fitness = np.array(fitnesses).mean()
-        #print("fitness after mean: ", fitness)
-        
-        genome.fitness = fitness 
+        genome.fitness = cum_reward
 
 
 def run(config_file):
