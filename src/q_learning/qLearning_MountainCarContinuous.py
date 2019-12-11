@@ -11,7 +11,7 @@ env = gym.make("MountainCar-v0")
 LEARNING_RATE = 0.1
 
 DISCOUNT = 0.95
-EPISODES = 25000
+EPISODES = 50000
 STATS_EVERY = 100
 SHOW_EVERY = 1000
 
@@ -110,7 +110,7 @@ for episode in range(EPISODES):
         aggr_ep_rewards['avg'].append(average_reward)
         aggr_ep_rewards['max'].append(max(ep_rewards[-STATS_EVERY:]))
         aggr_ep_rewards['min'].append(min(ep_rewards[-STATS_EVERY:]))
-        #print(f'Episode: {episode:>5d}, average reward: {average_reward:>4.1f}, max reward: {max(ep_rewards[-STATS_EVERY:])}, current epsilon: {epsilon:>1.2f}')
+        print(f'Episode: {episode:>5d}, average reward: {average_reward:>4.1f}, max reward: {max(ep_rewards[-STATS_EVERY:])}, current epsilon: {epsilon:>1.2f}')
 
     # Save qtable,both for later use and for analyze
     # if episode % 100 == 0:
