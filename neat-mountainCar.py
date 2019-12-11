@@ -1,11 +1,12 @@
 from __future__ import print_function
 import os
-import neat
+import neat as neat
 import numpy as np
 import gym
 from gym import wrappers
 import visualize
 import graphviz
+import argparse
 
 def eval_genomes(genomes, config):
     episodes=1
@@ -13,7 +14,7 @@ def eval_genomes(genomes, config):
     render =False
 
     for genome_id, genome in genomes:
-        genome.fitness = 4.0
+        genome.fitness = 0.0
         net = neat.nn.FeedForwardNetwork.create(genome, config)
         
         #simulation 
@@ -33,8 +34,8 @@ def eval_genomes(genomes, config):
                     my_env.render()
                 if done:
                     break
-                #cum_reward += reward
-                fitnesses.append(reward)
+                cum_reward += reward
+                fitnesses.append(cum_reward)
 
         fitness = np.array(fitnesses).mean()
         #print("fitness after mean: ", fitness)
@@ -51,21 +52,27 @@ def run(config_file):
     # Create the population, which is the top-level object for a NEAT run.
     p = neat.Population(config)
 
+    # load checkpoint
+    if args.checkpoint:
+        p = neat.Checkpointer.restore_checkpoint(args.checkpoint)
+
+
     # Add a stdout reporter to show progress in the terminal.
     #p.add_reporter(neat.StdOutReporter(True))
-    p.add_reporter(neat.StdOutReporter())
+    p.add_reporter(neat.StdOutReporter(True))
     stats = neat.StatisticsReporter()
     p.add_reporter(stats)
-    #p.add_reporter(neat.Checkpointer(5))
+    p.add_reporter(neat.Checkpointer(generation_interval=10, time_interval_seconds=None, filename_prefix='./checkpoints/neat-checkpoint-'))
+
 
     # Run for up to 300 generations.
-    winner = p.run(eval_genomes, 50)
+    winner = p.run(eval_genomes, 20)
 
     # Display the winning genome.
     print('\nBest genome:\n{!s}'.format(winner))
 
 
-    #visualize.draw_net(config, winner, view=True)
+    visualize.draw_net(config, winner, view=True)
     visualize.plot_stats(stats, ylog=False, view=True)
     visualize.plot_species(stats, view=True)
 
@@ -76,6 +83,12 @@ def mkdir(base, name):
     return path
 
 if __name__ == '__main__':
+
+    parser = argparse.ArgumentParser(description='OpenAI Gym Solver')
+    parser.add_argument('--checkpoint', type=str,
+                    help="Uses a checkpoint to start the simulation")
+    args = parser.parse_args()
+
     # Determine path to configuration file. This path manipulation is
     # here so that the script will run successfully regardless of the
     # current working directory.
