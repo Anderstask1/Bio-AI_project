@@ -20,7 +20,7 @@ import neat
 import gym
 import uuid
 from gym import wrappers
-from pytorch_neat.multi_env_eval import MultiEnvEvaluator
+from pytorch_neat.env_eval import MultiEnvEvaluator
 from pytorch_neat.activations import tanh_activation, relu_activation
 from pytorch_neat.adaptive_linear_net import AdaptiveLinearNet
 

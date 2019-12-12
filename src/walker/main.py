@@ -14,45 +14,33 @@
 
 import multiprocessing
 import os
-import numpy as np
 import click
 import neat
 import gym
-import uuid
 import visualize
 from gym import wrappers
-from pytorch_neat.multi_env_eval import MultiEnvEvaluator
-from pytorch_neat.recurrent_net import RecurrentNet
+from pytorch_neat.env_eval import EnvEvaluator
 
-batch_size = 1
-DEBUG = True
-
-envs = [gym.make("BipedalWalker-v2")]
-
-counter = 0
-FOLDER_NAME = "best_genome_" + str(uuid.uuid4())
-
+env = gym.make("BipedalWalker-v2")
 
 # envs[0] = gym.wrappers.Monitor(envs[0], "./vid", video_callable=lambda episode_id: episode_id % 1000 == 0, force=True)
 # print(envs)
 
 
-def make_net(genome, config, _batch_size):
-    return RecurrentNet.create(genome, config, _batch_size)
+def make_net(genome, config):
+    return neat.nn.RecurrentNetwork.create(genome, config)
 
 
 def activate_net(net, states):
-    outputs = net.activate(states).numpy()
+    outputs = net.activate(states)
     return outputs
 
 
 @click.command()
 @click.option("--n_generations", type=int, default=10000)
 @click.option("--n_processes", type=int, default=1)
-@click.option("--n_save", type=int, default=1000)
+@click.option("--n_save", type=int, default=100)
 def run(n_generations, n_processes, n_save):
-    # Load the config file, which is assumed to live in
-    # the same directory as this script.
     config_path = os.path.join(os.path.dirname(__file__), "neat.cfg")
     config = neat.Config(
         neat.DefaultGenome,
@@ -62,8 +50,7 @@ def run(n_generations, n_processes, n_save):
         config_path,
     )
 
-    evaluator = MultiEnvEvaluator(make_net, activate_net, save_individual=n_save, envs=envs, batch_size=batch_size,
-                                  max_env_steps=200)
+    evaluator = EnvEvaluator(make_net, activate_net, env=env, max_env_steps=1000)
 
     if n_processes > 1:
         pool = multiprocessing.Pool(processes=n_processes)
@@ -74,10 +61,6 @@ def run(n_generations, n_processes, n_save):
             )
             for (_, genome), fitness in zip(genomes, fitnesses):
                 genome.fitness = fitness
-            # best_genome = genomes[np.argmax(fitnesses)][1]
-            # with open(os.path.join("./best_genomes", FOLDER_NAME), 'wb+') as file:
-            #     pickle.dump(best_genome, file)
-            # print("Genome with fitness {:.2f} saved".format(best_genome.fitness))
     else:
 
         def eval_genomes(genomes, config):
@@ -94,7 +77,7 @@ def run(n_generations, n_processes, n_save):
     pop.add_reporter(stats)
     reporter = neat.StdOutReporter(True)
     pop.add_reporter(reporter)
-    checkpointer = neat.Checkpointer(generation_interval=50, time_interval_seconds=None,
+    checkpointer = neat.Checkpointer(generation_interval=n_save, time_interval_seconds=None,
                                      filename_prefix="../checkpoints/neat-checkpoint-BW-")
     pop.add_reporter(checkpointer)
 

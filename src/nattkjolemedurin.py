@@ -4,13 +4,11 @@ import neat
 import re
 import gym
 from gym import wrappers
-from pytorch_neat.multi_env_eval import MultiEnvEvaluator
+from pytorch_neat.env_eval import EnvEvaluator
 from mountain_car.main import make_net, activate_net
 
-envs = [gym.make("BipedalWalker-v2")] * 4
-for i, env in enumerate(envs):
-    envs[i] = gym.wrappers.Monitor(env, "./vid", video_callable=lambda episode_id: True, force=True)
-BATCH_SIZE = 4
+env = gym.make("BipedalWalker-v2")
+env = gym.wrappers.Monitor(env, "./vid", video_callable=lambda episode_id: True, force=True)
 
 config_path = os.path.join(os.path.dirname(__file__), "examples/adaptive/neat.cfg")
 config = neat.Config(
@@ -23,8 +21,7 @@ config = neat.Config(
 root_dir = "./best_genomes/genomes"
 stats_dir = "stats/"
 
-evaluator = MultiEnvEvaluator(make_net, activate_net, envs=envs, max_env_steps=1000, visualize=True,
-                              batch_size=BATCH_SIZE)
+evaluator = EnvEvaluator(make_net, activate_net, env=env, max_env_steps=1000)
 
 
 def atoi(text):
