@@ -19,10 +19,9 @@ import click
 import neat
 import gym
 import uuid
-import pickle
+import visualize
 from gym import wrappers
 from pytorch_neat.multi_env_eval import MultiEnvEvaluator
-from pytorch_neat.neat_reporter import LogReporter
 from pytorch_neat.recurrent_net import RecurrentNet
 
 batch_size = 1
@@ -95,16 +94,21 @@ def run(n_generations, n_processes, n_save):
     pop.add_reporter(stats)
     reporter = neat.StdOutReporter(True)
     pop.add_reporter(reporter)
-    checkpointer = neat.Checkpointer(generation_interval=40, time_interval_seconds=None,
-                                     filename_prefix="./checkpoints/neat-checkpoint-MC-")
+    checkpointer = neat.Checkpointer(generation_interval=10, time_interval_seconds=None,
+                                     filename_prefix="../checkpoints/neat-checkpoint-MC-")
     pop.add_reporter(checkpointer)
 
-    winner = pop.run(eval_genomes, n_generations)
+    winner = pop.run(eval_genomes, 100)
 
     print(winner)
     final_performance = evaluator.eval_genome(winner, config, render=True)
     print("Final performance: {}".format(final_performance))
     generations = reporter.generation + 1
+
+    visualize.draw_net(config, winner, view=True)
+    visualize.plot_stats(stats, ylog=False, view=True)
+    visualize.plot_species(stats, view=True)
+
     return generations
 
 

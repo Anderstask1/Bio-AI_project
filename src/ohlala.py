@@ -12,8 +12,8 @@ config = neat.Config(
     neat.DefaultStagnation,
     config_path,
 )
-root_dir = "./best_genomes/"
-stats_dir = "./best_genomes/stats/"
+root_dir = "../best_genomes/"
+stats_dir = "../best_genomes/stats/"
 
 for file in os.listdir(root_dir):
     if os.path.isdir(os.path.join(root_dir, file)):
@@ -22,7 +22,7 @@ for file in os.listdir(root_dir):
         genome = pickle.load(f)
 
     # visualize.plot_stats(genome, ylog=True, view=True, filename=(stats_dir + file + "-fitness.svg"))
-    # visualize.plot_species(genome, view=True, filename=(stats_dir + file + "-speciation.svg"))
+    # visualize.plot_species(genome, view=True, filename=(stats_dir + file + "-speciation_1.svg"))
 
     node_names = {-1: 'x', -2: 'dx', -3: 'theta', -4: 'dtheta', 0: 'control'}
     visualize.draw_net(config, genome, True, node_names=node_names)

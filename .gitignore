@@ -8,3 +8,4 @@ vid_archives/*
 *.svg
 *.json
 *.gv
+plots/*
