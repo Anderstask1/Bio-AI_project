@@ -22,10 +22,13 @@ from gym import wrappers
 from pytorch_neat.env_eval import EnvEvaluator
 import numpy as np
 
-env = gym.make("BipedalWalker-v2")
+env = gym.make("Breakout-v0")
+
 
 # envs[0] = gym.wrappers.Monitor(envs[0], "./vid", video_callable=lambda episode_id: episode_id % 1000 == 0, force=True)
 # print(envs)
+
+env = gym.wrappers.atari_preprocessing.AtariPreprocessing(env, frame_skip=1)
 
 
 def make_net(genome, config):
@@ -33,9 +36,10 @@ def make_net(genome, config):
 
 
 def activate_net(net, states):
-    outputs = net.activate(states)
-    # outputs = np.subtract(outputs, 1)
-    return outputs
+    # print(states.flatten().shape)
+    outputs = net.activate(states.ravel())
+    # print(np.argmax(outputs))
+    return np.argmax(outputs)
 
 
 @click.command()
@@ -75,7 +79,7 @@ def run(n_generations, n_processes, n_save, load_gen):
                     print(genome)
                     raise e
     if load_gen:
-        pop = neat.Checkpointer.restore_checkpoint("../checkpoints/neat-checkpoint-BW-" + load_gen)
+        pop = neat.Checkpointer.restore_checkpoint("../checkpoints/neat-checkpoint-BO-" + load_gen)
     else:
         pop = neat.Population(config)
     stats = neat.StatisticsReporter()
@@ -83,7 +87,7 @@ def run(n_generations, n_processes, n_save, load_gen):
     reporter = neat.StdOutReporter(True)
     pop.add_reporter(reporter)
     checkpointer = neat.Checkpointer(generation_interval=n_save, time_interval_seconds=None,
-                                     filename_prefix="../checkpoints/neat-checkpoint-BW-")
+                                     filename_prefix="../checkpoints/neat-checkpoint-BO-")
     pop.add_reporter(checkpointer)
 
     winner = pop.run(eval_genomes, n_generations)

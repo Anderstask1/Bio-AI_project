@@ -10,17 +10,19 @@ from neat.six_util import iteritems, itervalues
 
 env = gym.make("BipedalWalker-v2")
 # envs[0] = gym.wrappers.Monitor(envs[0], "./vid", video_callable=lambda episode_id: True, force=True)
-evaluator = EnvEvaluator(make_net, activate_net, env=env, max_env_steps=400)
+evaluator = EnvEvaluator(make_net, activate_net, env=env, max_env_steps=10000)
 
-pop = neat.Checkpointer.restore_checkpoint("../checkpoints/neat-checkpoint-BW-699-gc")
+pop = neat.Checkpointer.restore_checkpoint("../checkpoints/neat-checkpoint-BW-2499")
 
 genomes = list(iteritems(pop.population))
 fitnesses = []
 individual_num = 0
 for genome in genomes:
     individual_num += 1
-    fitness = evaluator.eval_genome(genome[1], pop.config, render=True)
+    fitness = evaluator.eval_genome(genome[1], pop.config)
     print("Individual number {0} with fitness {1:.2f}".format(individual_num, fitness))
+    if fitness > 200:
+        evaluator.eval_genome(genome[1], pop.config, render=True)
     fitnesses.append(fitness)
 best_ind = np.argmax(fitnesses)
 # print(best_ind)
