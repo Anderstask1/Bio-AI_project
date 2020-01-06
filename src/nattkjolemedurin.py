@@ -21,7 +21,7 @@ config = neat.Config(
 root_dir = "./best_genomes/genomes"
 stats_dir = "stats/"
 
-evaluator = EnvEvaluator(make_net, activate_net, env=env, max_env_steps=1000)
+evaluator = EnvEvaluator(make_net, activate_net, env=env)
 
 
 def atoi(text):
